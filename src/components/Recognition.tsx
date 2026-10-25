@@ -105,9 +105,10 @@ function RecognitionCard({ r, index }: { r: Recognition; index: number }) {
     <motion.a
       ref={rootRef}
       href={`#${r.projectSlug}`}
+      aria-label={`${r.project}, ${r.rank}, ${r.venue}`}
       data-cursor="link"
-      initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{
         duration: 0.9,

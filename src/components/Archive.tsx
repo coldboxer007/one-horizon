@@ -12,7 +12,7 @@ export default function Archive() {
         <Reveal>
           <div className="mb-6 flex items-center gap-3 text-[11px] tracking-[0.22em] uppercase font-[family-name:var(--font-mono)] text-white/45">
             <span className="inline-block h-px w-8 bg-white/25" />
-            <span>◆ 005 · Archive</span>
+            <span>◆ 006 · Archive</span>
           </div>
         </Reveal>
 
@@ -50,11 +50,16 @@ function ArchiveRow({
       transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1], delay: index * 0.04 }}
       className="group relative grid grid-cols-12 gap-4 md:gap-6 items-start bg-[color:var(--color-bg)] hover:bg-[color:var(--color-bg-elev)] transition-colors px-6 md:px-8 py-7 md:py-8 cursor-pointer"
     >
+      {/* Accent bar on hover */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[color:var(--color-accent)] via-[color:var(--color-accent-2)] to-[color:var(--color-accent-3)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      />
       <div className="col-span-12 md:col-span-1 text-[11px] tracking-[0.22em] uppercase font-[family-name:var(--font-mono)] text-white/35">
         {String(index + 1).padStart(2, "0")}
       </div>
       <div className="col-span-12 md:col-span-4">
-        <h3 className="font-[family-name:var(--font-display)] text-[22px] md:text-[26px] text-white font-medium tracking-tight">
+        <h3 className="font-[family-name:var(--font-display)] text-[22px] md:text-[26px] text-white font-medium tracking-tight transition-transform duration-300 group-hover:translate-x-1">
           {project.title}
         </h3>
         <p className="text-[13.5px] text-white/55 mt-1">{project.subtitle}</p>

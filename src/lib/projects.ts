@@ -457,6 +457,7 @@ export const archiveProjects: Project[] = [
 
 export type TeamMember = {
   name: string;
+  short: string; // what the team calls them, used on the Contact links
   role: string;
   bio: string;
   linkedin: string;
@@ -466,6 +467,7 @@ export type TeamMember = {
 export const team: TeamMember[] = [
   {
     name: "Sahil Tanna",
+    short: "Sahil",
     role: "Full-stack engineering · iOS & WatchOS · Product design · Interfaces",
     bio: "Builds end-to-end — from WatchOS vitals pipelines to full-stack web apps and design systems. The one who ships the product the user actually touches.",
     linkedin: "https://www.linkedin.com/in/sahiltanna7/",
@@ -473,6 +475,7 @@ export const team: TeamMember[] = [
   },
   {
     name: "Tayyab Khan",
+    short: "Tayyab",
     role: "ML engineering · Multi-agent systems · Platform",
     bio: "Designs the agent swarms, training curricula, and streaming backends that make the intelligence behave like infrastructure instead of a demo.",
     linkedin: "https://www.linkedin.com/in/tayyab-khan-159153282/",
@@ -480,18 +483,16 @@ export const team: TeamMember[] = [
   },
   {
     name: "Kumar Nikunj Sinha",
+    short: "Nikunj",
     role: "Research · Clinical reasoning · Data science",
     bio: "Grounds every project in rigor — clinical validation, statistical foundations, and the research lens that turns hackathon code into real work.",
     linkedin: "https://www.linkedin.com/in/kumar-nikunj-sinha-kns/",
+    email: "nikunjsinha@1horizon-ai.com",
   },
 ];
 
 export const contact = {
   email: "sahiltanna@1horizon-ai.com",
-  team: {
-    sahil: "sahiltanna@1horizon-ai.com",
-    tayyab: "tayyab@1horizon-ai.com",
-  },
 };
 
 export type Recognition = {

@@ -25,16 +25,17 @@ export default function Capabilities() {
         <Reveal>
           <div className="mb-6 flex items-center gap-3 text-[11px] tracking-[0.22em] uppercase font-[family-name:var(--font-mono)] text-white/45">
             <span className="inline-block h-px w-8 bg-gradient-to-r from-[color:var(--color-accent-3)] to-[color:var(--color-accent)]" />
-            <span>◆ 004 · Engineering Depth</span>
+            <span>◆ 005 · Engineering Depth</span>
           </div>
         </Reveal>
 
         <Reveal>
           <h2 className="mb-16 font-[family-name:var(--font-display)] text-[clamp(2rem,5vw,3.8rem)] leading-[1.03] tracking-[-0.02em] font-medium max-w-[900px] text-balance">
             Capabilities that span{" "}
-            <span className="bg-gradient-to-r from-[color:var(--color-accent-3)] via-[color:var(--color-accent)] to-[color:var(--color-accent-2)] bg-clip-text text-transparent">
-              perception, reasoning, and embodiment.
-            </span>
+            <span className="text-[color:var(--color-accent-3)]">perception,</span>{" "}
+            <span className="text-[color:var(--color-accent)]">reasoning,</span>{" "}
+            <span className="text-white/85">and</span>{" "}
+            <span className="text-[color:var(--color-accent-2)]">embodiment.</span>
           </h2>
         </Reveal>
 
@@ -45,7 +46,7 @@ export default function Capabilities() {
               <Reveal
                 key={c.title}
                 delay={i * 0.05}
-                className="group relative bg-[color:var(--color-bg)] hover:bg-[color:var(--color-bg-elev)] transition-colors p-6 md:p-7 min-h-[220px] flex flex-col justify-between overflow-hidden"
+                className="group relative bg-[color:var(--color-bg)] hover:bg-[color:var(--color-bg-elev)] transition-colors p-6 md:p-7 min-h-[220px] flex flex-col overflow-hidden"
               >
                 {/* Soft tint wash on hover */}
                 <span

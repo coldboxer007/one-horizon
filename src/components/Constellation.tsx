@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, Line } from "@react-three/drei";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
@@ -102,6 +102,7 @@ function CoreNode({ progress }: { progress: ProgressRef }) {
         position={[0, -1.6, 0]}
         center
         distanceFactor={10}
+        zIndexRange={[5, 0]}
         style={{ pointerEvents: "none" }}
       >
         <div className="text-center select-none">
@@ -234,6 +235,7 @@ function ProjectNode({
         ]}
         center
         distanceFactor={10}
+        zIndexRange={[5, 0]}
         style={{ pointerEvents: "none" }}
       >
         <div
@@ -303,6 +305,8 @@ function Scene({ progress }: { progress: ProgressRef }) {
 
 export default function Constellation() {
   const wrapRef = useRef<HTMLDivElement>(null);
+  // WebGL keeps rendering off-screen otherwise; pre-warm 200px early.
+  const live = useInView(wrapRef, { margin: "200px" });
   const { scrollYProgress } = useScroll({
     target: wrapRef,
     offset: ["start end", "end start"],
@@ -359,6 +363,7 @@ export default function Constellation() {
         <div className="absolute inset-0 grid-bg opacity-60" aria-hidden />
 
         <Canvas
+          frameloop={live ? "always" : "never"}
           camera={{ position: [0, 1.4, 10], fov: 48 }}
           dpr={[1, 1.8]}
           gl={{ antialias: true, alpha: true }}
@@ -367,7 +372,7 @@ export default function Constellation() {
         </Canvas>
 
         <motion.div
-          className="pointer-events-none absolute top-0 left-0 right-0 z-10 px-6 md:px-10 pt-28"
+          className="pointer-events-none absolute top-0 left-0 right-0 z-10 px-6 md:px-10 pt-28 pb-16 bg-gradient-to-b from-[#04060d] via-[#04060d]/85 to-transparent"
           style={{ opacity: headerOpacity }}
         >
           <div className="mx-auto max-w-[1400px]">

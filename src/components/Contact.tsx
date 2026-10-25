@@ -1,7 +1,9 @@
 "use client";
 
 import Reveal from "./Reveal";
-import { contact } from "@/lib/projects";
+import { contact, team } from "@/lib/projects";
+
+const dotColors = ["--color-accent-3", "--color-accent-2", "--color-accent"];
 
 export default function Contact() {
   return (
@@ -42,7 +44,7 @@ export default function Contact() {
         <Reveal>
           <div className="mb-6 flex items-center gap-3 text-[11px] tracking-[0.22em] uppercase font-[family-name:var(--font-mono)] text-white/45">
             <span className="inline-block h-px w-8 bg-white/25" />
-            <span>◆ 007 · Collaborate</span>
+            <span>◆ 008 · Collaborate</span>
           </div>
         </Reveal>
 
@@ -65,23 +67,20 @@ export default function Contact() {
 
         <Reveal>
           <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-[14px] font-[family-name:var(--font-mono)] tracking-wide">
-            <a
-              href={`mailto:${contact.team.sahil}`}
-              className="group inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors"
-            >
-              <span className="size-1.5 rounded-full bg-[color:var(--color-accent-3)] animate-pulse" />
-              <span className="text-white/40 mr-1">Sahil</span>
-              {contact.team.sahil}
-            </a>
-            <span className="hidden md:inline-block h-3 w-px bg-white/15" />
-            <a
-              href={`mailto:${contact.team.tayyab}`}
-              className="group inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors"
-            >
-              <span className="size-1.5 rounded-full bg-[color:var(--color-accent-2)] animate-pulse" />
-              <span className="text-white/40 mr-1">Tayyab</span>
-              {contact.team.tayyab}
-            </a>
+            {team.filter((m) => m.email).map((m, i) => (
+              <a
+                key={m.email}
+                href={`mailto:${m.email}`}
+                className="group inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+              >
+                <span
+                  className="size-1.5 rounded-full animate-pulse"
+                  style={{ background: `var(${dotColors[i % dotColors.length]})` }}
+                />
+                <span className="text-white/55 mr-1">{m.short}</span>
+                {m.email}
+              </a>
+            ))}
           </div>
         </Reveal>
 
@@ -127,7 +126,7 @@ export default function Contact() {
 
         <Reveal>
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-[color:var(--color-line)] pt-10 text-[13px] font-[family-name:var(--font-mono)] tracking-wide">
-            <Platform label="Google DeepMind · Global" value="Winner · $400K pool · Nano Banana" />
+            <Platform label="Google DeepMind · Global" value="Winner · $400K+ pool · Nano Banana" />
             <Platform label="Anthropic × HF · Global" value="3rd place · Consumer Track · MCP" />
             <Platform label="Google Cloud × Kaggle · Global" value="Honorable Mention · Tunix" />
           </div>

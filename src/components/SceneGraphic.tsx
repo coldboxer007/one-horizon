@@ -10,6 +10,11 @@ type Accent = {
   dot: string;
 };
 
+// Server and client float math can differ in the last ulp, which trips
+// React hydration on SVG attributes — keep every computed coordinate at
+// two decimals so both sides serialize identically.
+const r2 = (n: number) => Math.round(n * 100) / 100;
+
 export default function SceneGraphic({
   type,
   accent,
@@ -138,15 +143,16 @@ function TransformScene({
           <motion.rect
             key={i}
             x={x - 10}
-            y={-80}
+            y={-70}
             width="20"
-            height="80"
+            height="70"
             fill={accent.dot}
             fillOpacity="0.08"
             stroke={accent.dot}
             strokeOpacity="0.3"
-            initial={{ height: 0, y: 0 }}
-            animate={{ height: [0, 70, 30, 70], y: [0, -70, -30, -70] }}
+            style={{ transformBox: "fill-box", transformOrigin: "bottom" }}
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: [0, 1, 30 / 70, 1] }}
             transition={{
               duration: 6,
               repeat: Infinity,
@@ -181,8 +187,8 @@ function TimelineScene({
         <g key={y}>
           <line x1="0" y1={y} x2="600" y2={y} stroke="rgba(255,255,255,0.08)" />
           {Array.from({ length: 7 }).map((_, i) => {
-            const w = 40 + ((i * 13) % 80);
-            const x = 30 + i * 80 + (trackIdx % 2) * 20;
+            const w = r2(40 + ((i * 13) % 80));
+            const x = r2(30 + i * 80 + (trackIdx % 2) * 20);
             return (
               <motion.rect
                 key={i}
@@ -222,14 +228,14 @@ function TimelineScene({
       {/* Waveform */}
       <g stroke={accent.dot} strokeOpacity="0.45" strokeLinecap="round">
         {Array.from({ length: 80 }).map((_, i) => {
-          const h = 6 + Math.abs(Math.sin(i * 0.8)) * 20;
+          const h = r2(6 + Math.abs(Math.sin(i * 0.8)) * 20);
           return (
             <line
               key={i}
-              x1={10 + i * 7.3}
-              y1={360 - h}
-              x2={10 + i * 7.3}
-              y2={360 + h}
+              x1={r2(10 + i * 7.3)}
+              y1={r2(360 - h)}
+              x2={r2(10 + i * 7.3)}
+              y2={r2(360 + h)}
               strokeWidth="1.5"
             />
           );
@@ -290,18 +296,19 @@ function SignalScene({
       {/* Bar ticks */}
       <g>
         {Array.from({ length: 20 }).map((_, i) => {
-          const h = 6 + Math.abs(Math.sin(i * 1.1)) * 18;
+          const h = r2(6 + Math.abs(Math.sin(i * 1.1)) * 18);
           return (
             <motion.rect
               key={i}
               x={40 + i * 28}
-              y={340 - h}
+              y={r2(340 - h)}
               width="4"
-              height={h * 2}
+              height={r2(h * 2)}
               rx="1.5"
               fill={accent.dot}
               fillOpacity="0.5"
-              animate={{ height: [h * 2, h * 0.8, h * 2] }}
+              style={{ transformBox: "fill-box", transformOrigin: "top" }}
+              animate={{ scaleY: [1, 0.4, 1] }}
               transition={{ duration: 2.5, delay: i * 0.05, repeat: Infinity }}
             />
           );
@@ -367,17 +374,18 @@ function DeviceScene({
       {/* Signal bars at bottom */}
       <g transform="translate(0 360)">
         {Array.from({ length: 30 }).map((_, i) => {
-          const h = 4 + Math.abs(Math.sin(i * 0.6)) * 16;
+          const h = r2(4 + Math.abs(Math.sin(i * 0.6)) * 16);
           return (
             <motion.rect
               key={i}
               x={i * 20 + 10}
-              y={-h}
+              y={r2(-h)}
               width="3"
               height={h}
               fill={accent.dot}
               fillOpacity="0.4"
-              animate={{ height: [h, h * 1.5, h] }}
+              style={{ transformBox: "fill-box", transformOrigin: "top" }}
+              animate={{ scaleY: [1, 1.5, 1] }}
               transition={{ duration: 1.4, delay: i * 0.04, repeat: Infinity }}
             />
           );
@@ -402,7 +410,7 @@ function RadarScene({
   const angle = (i: number) => (Math.PI * 2 * i) / sides - Math.PI / 2;
   const polygon = (r: number) =>
     Array.from({ length: sides })
-      .map((_, i) => `${cx + r * Math.cos(angle(i))},${cy + r * Math.sin(angle(i))}`)
+      .map((_, i) => `${r2(cx + r * Math.cos(angle(i)))},${r2(cy + r * Math.sin(angle(i)))}`)
       .join(" ");
 
   // Two candidate profiles (outer / inner) to animate between
@@ -412,7 +420,7 @@ function RadarScene({
     vals
       .map(
         (v, i) =>
-          `${cx + 160 * v * Math.cos(angle(i))},${cy + 160 * v * Math.sin(angle(i))}`,
+          `${r2(cx + 160 * v * Math.cos(angle(i)))},${r2(cy + 160 * v * Math.sin(angle(i)))}`,
       )
       .join(" ");
 
@@ -446,8 +454,8 @@ function RadarScene({
           key={i}
           x1={cx}
           y1={cy}
-          x2={cx + 160 * Math.cos(angle(i))}
-          y2={cy + 160 * Math.sin(angle(i))}
+          x2={r2(cx + 160 * Math.cos(angle(i)))}
+          y2={r2(cy + 160 * Math.sin(angle(i)))}
           stroke="rgba(255,255,255,0.08)"
           strokeWidth="0.6"
         />
@@ -480,8 +488,8 @@ function RadarScene({
         <circle
           key={`a${i}`}
           r="2.5"
-          cx={cx + 160 * v * Math.cos(angle(i))}
-          cy={cy + 160 * v * Math.sin(angle(i))}
+          cx={r2(cx + 160 * v * Math.cos(angle(i)))}
+          cy={r2(cy + 160 * v * Math.sin(angle(i)))}
           fill={accent.dot}
           fillOpacity="0.8"
         />
@@ -494,7 +502,7 @@ function RadarScene({
         transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
       >
         <path
-          d={`M${cx} ${cy} L${cx + 160} ${cy} A160 160 0 0 1 ${cx + 160 * Math.cos(Math.PI / 6)} ${cy + 160 * Math.sin(Math.PI / 6)} Z`}
+          d={`M${cx} ${cy} L${cx + 160} ${cy} A160 160 0 0 1 ${r2(cx + 160 * Math.cos(Math.PI / 6))} ${r2(cy + 160 * Math.sin(Math.PI / 6))} Z`}
           fill={accent.dot}
           fillOpacity="0.12"
         />
@@ -503,21 +511,19 @@ function RadarScene({
       {/* Live voice bars — mic activity during interview */}
       <g transform="translate(0 350)">
         {Array.from({ length: 28 }).map((_, i) => {
-          const base = 6 + Math.abs(Math.sin(i * 0.9)) * 14;
+          const base = r2(6 + Math.abs(Math.sin(i * 0.9)) * 14);
           return (
             <motion.rect
               key={i}
               x={60 + i * 17}
-              y={-base}
+              y={r2(-base)}
               width="5"
-              height={base * 2}
+              height={r2(base * 2)}
               rx="2.5"
               fill={accent.dot}
               fillOpacity="0.55"
-              animate={{
-                height: [base * 2, base * 0.6, base * 2.2, base * 2],
-                y: [-base, -base * 0.3, -base * 1.1, -base],
-              }}
+              style={{ transformBox: "fill-box", transformOrigin: "center" }}
+              animate={{ scaleY: [1, 0.3, 1.1, 1] }}
               transition={{
                 duration: 1.6,
                 delay: i * 0.05,

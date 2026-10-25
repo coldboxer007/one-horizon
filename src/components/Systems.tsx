@@ -2,15 +2,13 @@
 
 import { featuredProjects } from "@/lib/projects";
 import ProjectCard from "./ProjectCard";
+import HephaestusScene from "./HephaestusScene";
 import Reveal from "./Reveal";
 
 export default function Systems() {
-  // Hephaestus is promoted to the hero slot — it's our strongest credential
+  // Hephaestus gets the pinned scroll scene — it's our strongest credential
   // (Winner · Google DeepMind global hackathon). Everything else keeps order.
-  const heroSlug = "hephaestus";
-  const hero =
-    featuredProjects.find((p) => p.slug === heroSlug) ?? featuredProjects[0];
-  const rest = featuredProjects.filter((p) => p.slug !== hero.slug);
+  const rest = featuredProjects.filter((p) => p.slug !== "hephaestus");
 
   return (
     <section
@@ -22,7 +20,7 @@ export default function Systems() {
         <Reveal>
           <div className="mb-6 flex items-center gap-3 text-[11px] tracking-[0.22em] uppercase font-[family-name:var(--font-mono)] text-white/45">
             <span className="inline-block h-px w-8 bg-white/25" />
-            <span>◆ 003 · Featured Systems</span>
+            <span>◆ 004 · Featured Systems</span>
           </div>
         </Reveal>
 
@@ -33,8 +31,12 @@ export default function Systems() {
               className="font-[family-name:var(--font-display)] text-[clamp(2rem,5vw,3.8rem)] leading-[1.03] tracking-[-0.02em] font-medium text-balance max-w-[780px]"
             >
               A portfolio of{" "}
-              <span className="bg-gradient-to-r from-[color:var(--color-accent)] via-[color:var(--color-accent-2)] to-[color:var(--color-accent-3)] bg-clip-text text-transparent">
+              <span className="relative inline-block text-[color:var(--color-accent)]">
                 systems,
+                <span
+                  aria-hidden
+                  className="absolute -bottom-1 left-0 right-[0.18em] h-[2px] rounded-full bg-gradient-to-r from-[color:var(--color-accent)] to-transparent"
+                />
               </span>{" "}
               not screenshots.
             </h2>
@@ -46,20 +48,16 @@ export default function Systems() {
           </div>
         </Reveal>
 
-        {/* Full-width hero */}
-        <div className="mb-5">
-          <ProjectCard project={hero} index={0} variant="hero" />
-        </div>
+      </div>
 
+      {/* Pinned scroll scene: blueprint → 3D extrusion → project panel */}
+      <HephaestusScene />
+
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         {/* 2×3 bento for the remaining 6 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
           {rest.map((p, i) => (
-            <ProjectCard
-              key={p.slug}
-              project={p}
-              index={i + 1}
-              variant="standard"
-            />
+            <ProjectCard key={p.slug} project={p} index={i + 1} />
           ))}
         </div>
       </div>

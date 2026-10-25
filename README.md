@@ -40,19 +40,19 @@ src/
 │   ├── page.tsx            # Single-page composition — 9 sections in order
 │   └── globals.css         # CSS variables, body gradients, noise, scrollbar, grid-bg
 ├── components/
-│   ├── BootSequence.tsx    # Full-screen intro animation (session-gated)
 │   ├── BrandIcon.tsx       # Inline SVG brand icons for all platforms
 │   ├── Capabilities.tsx    # Engineering depth — 8-cell grid with icons
 │   ├── Constellation.tsx   # Scroll-driven 3D R3F scene
 │   ├── ConstellationMount.tsx  # Client-side dynamic import wrapper
 │   ├── Contact.tsx         # Contact section with recognition signals
 │   ├── Cursor.tsx          # Custom cursor: dot + ring + label
-│   ├── Footer.tsx          # Minimal footer
-│   ├── Hero.tsx            # Full-height hero with particle field
+│   ├── Footer.tsx          # Sunrise end card (scroll-driven) + credits line
+│   ├── HephaestusScene.tsx # Pinned SVG scroll scene for the Hephaestus win
+│   ├── Hero.tsx            # Full-height hero over the orbital-sunrise shader
+│   ├── HorizonField.tsx    # WebGL2 planet-limb sunrise shader (hero background)
 │   ├── Manifesto.tsx       # Animated manifesto + Recognition + pillars
 │   ├── Medal.tsx           # Animated SVG award medallions (Trophy / Bronze / HM)
 │   ├── Nav.tsx             # Fixed nav with scroll progress bar + active tracking
-│   ├── ParticleField.tsx   # Custom Canvas 2D particle system engine
 │   ├── PlatformRibbon.tsx  # Infinite-scroll platform logo marquee
 │   ├── ProjectCard.tsx     # Individual project card with scene graphic
 │   ├── Recognition.tsx     # Recognition cards with medal, globe, scale
@@ -74,7 +74,7 @@ The entire site is a single scrollable page. The order of sections was chosen de
 
 ```
 Hero
-  └── ParticleField (canvas engine)
+  └── HorizonField (WebGL2 sunrise shader)
 Manifesto
   └── Recognition (wins block)
   └── Three pillars
@@ -86,7 +86,7 @@ Capabilities (engineering depth grid)
 Archive (additional projects)
 Team (photo + member cards)
 Contact
-Footer
+Footer (sunrise end card)
 ```
 
 ---
@@ -126,42 +126,26 @@ The `.noise::after` utility injects a subtle SVG `feTurbulence` filter as an `::
 
 ### Motion Accessibility
 
-A global `@media (prefers-reduced-motion: reduce)` block forces all animation durations to `0.001ms`, effectively disabling motion for users who opt out. The `ParticleField` additionally halves its particle count for reduced-motion users.
+A global `@media (prefers-reduced-motion: reduce)` block forces all animation durations to `0.001ms`, effectively disabling motion for users who opt out. New CSS motion (hero entrance, card hover, footer sunrise) lives inside `@media (prefers-reduced-motion: no-preference)`, so the base styles are the final state. `HorizonField` renders a single still frame for reduced-motion users.
 
 ---
 
 ## Key Features and How They Were Built
 
-### 1. Boot Sequence (`BootSequence.tsx`)
+### 1. Orbital Sunrise Hero (`HorizonField.tsx`)
 
-On every fresh session (tracked via `sessionStorage`), a full-screen intro overlay plays before the page loads:
+The brand name, literally: a planet limb seen from orbit with the sun cresting it. It replaced a 7,000-particle Canvas 2D field (CPU-heavy, and it sat behind the headline) and a session-gated boot overlay (it locked scroll for about 2.4 seconds).
 
-- Scroll is locked for the duration via `document.documentElement.style.overflow = "hidden"`.
-- A `requestAnimationFrame` loop drives progress over 1.7 seconds, advancing through four boot lines: `BOOTING ORBITAL OBSERVATORY → ALIGNING PARTICLE LATTICE → SYSTEMS IN MOTION → 01 HORIZON — ONLINE`.
-- An animated SVG draws a gradient circle (stroke-dashoffset animation), two inner rings, and a central logo mark.
-- Corner ticks display observatory coordinates (LAT/LONG of Mumbai).
-- On completion, the overlay fades out and scroll is re-enabled.
-- **Session-gated**: plays once per browser session. Navigating between tabs or refreshing within the session skips it.
+- **One WebGL2 fragment shader**, a full-screen triangle and no libraries. It draws stars with parallax, a layered atmosphere band (warm → white → azure, brightest near the sun), clouds lit only near the terminator, sparse city lights on the night side, and the sun with a bloom, starburst and anamorphic streak. Linear light → ACES tonemap → gamma, then composited over `#04060d` so the edges match the page.
+- **Choreography:** the sun crests over about 2.2 seconds, timed to land as the CSS headline word-rise finishes. Scrolling lifts it further, and the mouse adds a small parallax.
+- **Layout:** on wide screens the limb sweeps up the right side so the sun sits clear of the headline. On narrow screens it runs just under the nav, and the dark planet sits behind the text (surface detail is dimmed there).
+- **Fallbacks:** without WebGL2 the canvas hides and the hero's CSS gradient shows. With reduced motion it renders one still frame.
 
-### 2. Particle Field (`ParticleField.tsx`)
+### 2. Multiverse Project Cards and Sunrise Footer
 
-A hand-written Canvas 2D engine — no library. 7,000 particles (2,500 on reduced-motion) allocated as typed `Float32Array` buffers for position, velocity, target, hue, and phase.
-
-**State machine:**
-
-| State | Behaviour |
-|---|---|
-| `0` (sphere) | Particles orbit a Fibonacci-distributed sphere, rotating on the Y axis |
-| `1` (forming) | Particles spring toward sampled pixel positions of rasterised text |
-| `2` (text idle) | Text shape holds, particles jitter gently |
-
-**Text sampling:** A hidden offscreen canvas renders the phrase at large font size. Its pixel data is scanned to collect lit pixel coordinates, which become particle target positions. Fisher-Yates shuffled so particles come from random directions rather than top-left.
-
-**Mouse repulsion:** In text states, a 120px-radius repulsion zone pushes particles away from the pointer with a proximity-scaled force, creating a "cursor parting the crowd" effect.
-
-**Phrase cycling:** `sphere (3.2s) → phrase (4.2s) → sphere → next phrase`. Cycles through: `"1 HORIZON" → "SYSTEMS IN MOTION" → "THINK · SEE · SPEAK · ACT"`.
-
-**Rendering:** Partial alpha clear (`rgba(4,6,13,0.28)` each frame) creates motion trails. Particle size and opacity scale with velocity and depth (`FOV / zPos`). In text state, all particles lock to `hsl(196, 90%, 82%)` — a cold blue-white.
+- **Card hover (`ProjectCard.tsx` + `globals.css`):** each system is its own universe. Ben-Day halftone dots bloom around the cursor, the title misregisters in pink/cyan with a stepped 12 fps animation ("on twos"), and an `EARTH-1H0x` tag appears. Mouse-only, with no movement under reduced motion.
+- **Footer end card (`Footer.tsx`):** the page closes on the horizon it opened with. A dark planet arc with a lit limb, a sun, and a silhouetted "1 HORIZON" wordmark rise as the footer scrolls in (CSS `view-timeline`).
+- **Dawn layer (`layout.tsx` `.dawn`):** a fixed, faint warm glow whose opacity follows page scroll, so the page brightens toward the footer sunrise.
 
 ### 3. Scroll-Driven 3D Constellation (`Constellation.tsx` + `ConstellationMount.tsx`)
 
@@ -366,13 +350,13 @@ npm run lint
 
 ## Performance Considerations
 
-- **Typed arrays in ParticleField:** Position, velocity, and target data for all 7,000 particles are `Float32Array` — avoids garbage collection pressure from JS object allocation.
+- **GPU hero:** `HorizonField` is one analytic fragment shader (no raymarching) with a 1.5 DPR cap and adaptive render scale. It and the R3F canvas both stop rendering when scrolled off-screen.
 - **GPU compositing in ribbon:** `translate3d` and `will-change: transform` keep the marquee off the main thread.
 - **Dynamic R3F import:** The Three.js canvas is loaded client-side only via `next/dynamic` with `ssr: false`, keeping the server-rendered HTML fast.
 - **DPR cap in R3F canvas:** `dpr={[1, 1.8]}` prevents 2× retina rendering overhead on high-res displays.
 - **Image optimisation:** `next/image` serves the team photo as WebP/Avif (`formats: ["image/avif", "image/webp"]` in `next.config.ts`) with responsive `sizes`.
 - **Font subsetting:** All three Google Fonts are loaded with `subsets: ["latin"]` and `display: swap`.
-- **Particle count reduction:** `matchMedia("prefers-reduced-motion")` cuts particle count from 7,000 to 2,500 for accessibility and battery.
+- **CSS-first motion:** The hero entrance is CSS keyframes (plays before hydration); the footer sunrise and the page "dawn" layer use scroll-driven animations (`animation-timeline`) behind `@supports`, with a static fallback.
 
 ---
 

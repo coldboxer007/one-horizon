@@ -19,15 +19,19 @@ export default function Team() {
         <Reveal>
           <div className="mb-6 flex items-center gap-3 text-[11px] tracking-[0.22em] uppercase font-[family-name:var(--font-mono)] text-white/45">
             <span className="inline-block h-px w-8 bg-white/25" />
-            <span>◆ 006 · Team</span>
+            <span>◆ 007 · Team</span>
           </div>
         </Reveal>
 
         <Reveal>
           <h2 className="mb-10 font-[family-name:var(--font-display)] text-[clamp(2rem,5vw,3.8rem)] leading-[1.03] tracking-[-0.02em] font-medium max-w-[820px] text-balance">
             Three engineers. One{" "}
-            <span className="bg-gradient-to-r from-[color:var(--color-accent-3)] via-[color:var(--color-accent)] to-[color:var(--color-accent-2)] bg-clip-text text-transparent">
+            <span className="relative inline-block text-[color:var(--color-accent-3)]">
               operating horizon.
+              <span
+                aria-hidden
+                className="absolute -bottom-1 left-0 right-[0.18em] h-[2px] rounded-full bg-gradient-to-r from-[color:var(--color-accent-3)] to-transparent"
+              />
             </span>
           </h2>
         </Reveal>
@@ -146,8 +150,8 @@ export default function Team() {
 function TeamBanner() {
   return (
     <motion.figure
-      initial={{ opacity: 0, y: 24, filter: "blur(10px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 1.1, ease: [0.2, 0.8, 0.2, 1] }}
       className="relative overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-[color:var(--color-bg-elev)]/40"
