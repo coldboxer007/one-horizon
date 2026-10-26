@@ -198,6 +198,9 @@ function FieldLogCarousel() {
   const [held, setHeld] = useState(false); // hovered, focused or dragging
   const reduced = useReducedMotion();
   const inView = useInView(frameRef, { amount: 0.4 });
+  // Slides off to the side never trigger native lazy-loading, so fetch them
+  // all once the slideshow is close; otherwise the next slide arrives blank.
+  const near = useInView(frameRef, { margin: "800px", once: true });
   const x = useMotionValue(0);
 
   useEffect(() => {
@@ -265,7 +268,7 @@ function FieldLogCarousel() {
           }}
         >
           {slides.map((s, i) => (
-            <FieldLogSlide key={s.src} slide={s} active={i === index} n={i + 1} />
+            <FieldLogSlide key={s.src} slide={s} active={i === index} n={i + 1} eager={near} />
           ))}
         </motion.div>
 
@@ -323,7 +326,19 @@ function FieldLogCarousel() {
   );
 }
 
-function FieldLogSlide({ slide: s, active, n }: { slide: Slide; active: boolean; n: number }) {
+function FieldLogSlide({
+  slide: s,
+  active,
+  n,
+  eager,
+}: {
+  slide: Slide;
+  active: boolean;
+  n: number;
+  eager: boolean;
+}) {
+  // Same sizes for the blurred copy and the photo, so both use one download.
+  const sizes = s.whole ? "(min-width: 768px) 560px, 100vw" : "(min-width: 1024px) 1340px, 100vw";
   return (
     <figure
       aria-roledescription="slide"
@@ -338,7 +353,8 @@ function FieldLogSlide({ slide: s, active, n }: { slide: Slide; active: boolean;
           alt=""
           aria-hidden
           fill
-          sizes="(min-width: 1024px) 1340px, 100vw"
+          sizes={sizes}
+          loading={eager ? "eager" : "lazy"}
           draggable={false}
           className="object-cover scale-110 opacity-70"
           style={{ filter: "blur(40px) brightness(0.45) saturate(0.8)" }}
@@ -358,7 +374,8 @@ function FieldLogSlide({ slide: s, active, n }: { slide: Slide; active: boolean;
           src={s.src}
           alt={s.alt}
           fill
-          sizes={s.whole ? "(min-width: 768px) 560px, 100vw" : "(min-width: 1024px) 1340px, 100vw"}
+          sizes={sizes}
+          loading={eager ? "eager" : "lazy"}
           draggable={false}
           className={`object-cover ${s.imgPos}`}
           style={{
