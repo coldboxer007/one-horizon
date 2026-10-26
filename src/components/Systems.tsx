@@ -55,7 +55,7 @@ export default function Systems() {
 
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         {/* 2×3 bento for the remaining 6 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
           {rest.map((p, i) => (
             <ProjectCard key={p.slug} project={p} index={i + 1} />
           ))}

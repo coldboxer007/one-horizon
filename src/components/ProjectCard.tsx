@@ -264,14 +264,14 @@ function BrandStrip({
 }) {
   if (!brands || brands.length === 0) return null;
   return (
-    <div className="flex items-center gap-3 pt-1 border-t border-[color:var(--color-line)] mt-1">
+    <div className="flex flex-wrap items-center gap-x-3 pt-1 border-t border-[color:var(--color-line)] mt-1">
       <span
         className="text-[9.5px] tracking-[0.22em] uppercase font-[family-name:var(--font-mono)] text-white/35 pt-3"
         style={{ textShadow: `0 0 8px ${accent}20` }}
       >
         Built on
       </span>
-      <div className="flex items-center gap-3 pt-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-3">
         {brands.map((b) => (
           <span
             key={b}

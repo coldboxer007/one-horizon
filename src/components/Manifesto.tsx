@@ -25,9 +25,10 @@ export default function Manifesto() {
         aria-hidden
       />
 
-      {/* Ambient accent glow */}
+      {/* Ambient accent glow, kept clear of the section edges: overflow-hidden
+          would otherwise clip the blur into a hard seam */}
       <div
-        className="pointer-events-none absolute -top-32 -left-32 size-[480px] rounded-full blur-[120px] opacity-40"
+        className="pointer-events-none absolute top-40 -left-32 size-[480px] rounded-full blur-[120px] opacity-40"
         style={{
           background:
             "radial-gradient(circle, rgba(106,169,255,0.55), transparent 60%)",
@@ -35,7 +36,7 @@ export default function Manifesto() {
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -bottom-32 -right-32 size-[520px] rounded-full blur-[120px] opacity-30"
+        className="pointer-events-none absolute bottom-40 -right-32 size-[520px] rounded-full blur-[120px] opacity-30"
         style={{
           background:
             "radial-gradient(circle, rgba(140,107,255,0.55), transparent 60%)",

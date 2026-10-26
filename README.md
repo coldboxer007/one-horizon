@@ -60,7 +60,7 @@ src/
 │   ├── SceneGraphic.tsx    # Per-project SVG scene illustrations
 │   ├── SmoothScroll.tsx    # Lenis initializer (render-null client component)
 │   ├── Systems.tsx         # Featured projects grid
-│   └── Team.tsx            # Team section with Y Combinator photo + member cards
+│   └── Team.tsx            # Team section: field-log photo slideshow + member cards
 └── lib/
     ├── cn.ts               # clsx + tailwind-merge utility
     └── projects.ts         # All data: projects, team, capabilities, recognitions
@@ -84,7 +84,7 @@ ConstellationMount
 Systems (featured projects)
 Capabilities (engineering depth grid)
 Archive (additional projects)
-Team (photo + member cards)
+Team (photo slideshow + member cards)
 Contact
 Footer (sunrise end card)
 ```
@@ -233,7 +233,7 @@ A horizontal marquee of platform logos that scrolls infinitely at 42s per cycle.
 
 ### 9. Team Section (`Team.tsx`)
 
-**Photo banner:** A cinematic widescreen photo from Y Combinator Startup School India, treated to blend with the dark brand environment:
+**Field log slideshow:** cinematic widescreen photos (YC Startup School India first, then ECHO's hardware debut, `public/team-echo.jpg`). Slides are defined in the `slides` array in `Team.tsx`. It auto-advances every 6 seconds while on screen. It pauses on hover, focus or drag, and has a pause button. It can be dragged or swiped, and doesn't auto-advance under reduced motion. Slides with `whole: true` show the full portrait photo on desktop over a blurred copy of itself. Each photo is treated to blend with the dark brand environment:
 
 - `filter: contrast(1.08) brightness(1.0) saturate(0.7)` — reduces saturation to avoid a vivid photo clash
 - A `color` blend-mode layer at `opacity: 0.38` in `#6aa3e6` (azure) tints the image blue while preserving subject detail

@@ -176,6 +176,8 @@ All content lives in `src/lib/projects.ts` except the team photo, which is refer
 
 ### Case A: a new or updated team photo (most likely)
 
+> **Update:** the banner is now a slideshow. To add or swap a photo, add an entry to the `slides` array in `src/components/Team.tsx` (`whole: true` for portrait photos) instead of editing the `<Image>` below.
+
 Put the file in `public/`. Use a JPG of at least 2400px on the long edge, since the banner is roughly 21:9 and `next/image` handles WebP/AVIF conversion. Then update `TeamBanner` in `src/components/Team.tsx`:
 
 ```tsx

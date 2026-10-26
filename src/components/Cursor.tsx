@@ -52,6 +52,7 @@ export default function Cursor() {
       if (explicit === "link") return ["link", "VISIT"];
       if (explicit === "external") return ["link", "OPEN ↗"];
       if (explicit === "mail") return ["link", "EMAIL"];
+      if (explicit === "drag") return ["link", "DRAG ⇄"];
       if (interactive.tagName === "A") {
         const href = interactive.getAttribute("href") || "";
         if (href.startsWith("mailto:")) return ["link", "EMAIL"];

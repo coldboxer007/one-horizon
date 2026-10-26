@@ -256,7 +256,10 @@ export default function HephaestusScene() {
         />
 
         {/* Top chrome */}
-        <div className="pointer-events-none absolute top-20 md:top-24 inset-x-0 mx-auto max-w-[1400px] px-6 md:px-10 flex items-start justify-between">
+        <motion.div
+          style={{ ["--panel" as string]: panelO }}
+          className="pointer-events-none absolute top-20 md:top-24 inset-x-0 mx-auto max-w-[1400px] px-6 md:px-10 flex items-start justify-between max-md:opacity-[calc(1-var(--panel))]"
+        >
           <div>
             <div className="flex items-center gap-3 text-[11px] tracking-[0.22em] uppercase font-[family-name:var(--font-mono)] text-white/45">
               <span className="inline-block h-px w-8 bg-gradient-to-r from-[#8c6bff] to-transparent" />
@@ -271,7 +274,7 @@ export default function HephaestusScene() {
             <div>Scene 01 · Transform</div>
             <div className="text-white/20">scroll to run pipeline</div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Stage rail */}
         <div className="pointer-events-none absolute left-6 md:left-10 top-1/2 hidden md:flex -translate-y-1/2 flex-col items-center gap-3" aria-hidden>
@@ -395,14 +398,16 @@ export default function HephaestusScene() {
         {/* Final project panel */}
         <motion.aside
           inert={!panelOn}
-          style={{ opacity: panelO, x: panelX }}
-          className="absolute right-4 md:right-10 top-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-[400px] rounded-2xl border border-white/12 bg-[#0a0f1c]/80 backdrop-blur-md p-6 md:p-7 shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
+          // Centre via motion's y: a Tailwind translate class would be
+          // overwritten by the transform motion writes for x.
+          style={{ opacity: panelO, x: panelX, y: "-50%" }}
+          className="absolute right-4 md:right-10 top-1/2 w-[calc(100%-2rem)] max-w-[400px] rounded-2xl border border-white/12 bg-[#0a0f1c]/80 backdrop-blur-md p-6 md:p-7 shadow-[0_20px_80px_rgba(0,0,0,0.5)]"
         >
           <h3 className="font-[family-name:var(--font-display)] text-[32px] md:text-[38px] font-medium tracking-[-0.02em] text-white leading-none">
             {project_.title}
           </h3>
           <p className="mt-2 text-[14px] text-white/75">{project_.subtitle}</p>
-          <p className="mt-4 text-[13.5px] leading-relaxed text-white/60">
+          <p className="mt-4 text-[13.5px] leading-relaxed text-white/60 [@media(max-height:680px)]:line-clamp-3">
             {project_.summary}
           </p>
           <div className="mt-5 flex flex-wrap gap-1.5">
@@ -415,7 +420,7 @@ export default function HephaestusScene() {
               </span>
             ))}
           </div>
-          <div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+          <div className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4 [@media(max-height:680px)]:hidden">
             {project_.brands.map((b) => (
               <span key={b} className="inline-flex items-center gap-1.5 text-[10.5px] text-white/55 font-[family-name:var(--font-mono)]">
                 <BrandIcon brand={b} size={13} />

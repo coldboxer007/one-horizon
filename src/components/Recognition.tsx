@@ -53,7 +53,7 @@ export default function Recognition() {
         </span>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-5">
         {recognitions.map((r, i) => (
           <RecognitionCard key={r.projectSlug} r={r} index={i} />
         ))}

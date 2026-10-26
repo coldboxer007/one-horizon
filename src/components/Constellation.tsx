@@ -118,6 +118,9 @@ function CoreNode({ progress }: { progress: ProgressRef }) {
   );
 }
 
+const band = (v: number, a: number, b: number) =>
+  Math.min(1, Math.max(0, (v - a) / (b - a)));
+
 function ProjectNode({
   node,
   index,
@@ -145,6 +148,16 @@ function ProjectNode({
     [node.position, index],
   );
   const currentPos = useRef(startPos.clone());
+  const labelPos = useMemo(
+    () =>
+      new THREE.Vector3(
+        node.position[0] * 1.2,
+        node.position[1] * 1.2 + 0.45,
+        node.position[2] * 1.2,
+      ),
+    [node.position],
+  );
+  const scratch = useMemo(() => new THREE.Vector3(), []);
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
@@ -187,8 +200,20 @@ function ProjectNode({
       }
     }
 
-    if (labelRef.current) {
-      labelRef.current.style.opacity = String(reveal);
+    if (labelRef.current && meshRef.current?.parent) {
+      // The ring rotates with scroll, so a label can swing onto the header,
+      // the caption or past the screen edge: fade it out in those bands.
+      const p = meshRef.current.parent.localToWorld(scratch.copy(labelPos)).project(state.camera);
+      const { width: w, height: h } = state.size;
+      const sx = ((p.x + 1) / 2) * w;
+      const sy = ((1 - p.y) / 2) * h;
+      const safe =
+        band(sy, h * 0.3, h * 0.38) *
+        // Phones wrap the caption to more lines, so it starts higher.
+        (1 - band(sy, h * (w < 640 ? 0.62 : 0.78), h * (w < 640 ? 0.7 : 0.84))) *
+        band(sx, 40, 110) *
+        (1 - band(sx, w - 110, w - 40));
+      labelRef.current.style.opacity = String(reveal * safe);
       labelRef.current.style.transform = `translateY(${(1 - reveal) * 10}px)`;
     }
   });
@@ -228,11 +253,7 @@ function ProjectNode({
       </mesh>
 
       <Html
-        position={[
-          node.position[0] * 1.2,
-          node.position[1] * 1.2 + 0.45,
-          node.position[2] * 1.2,
-        ]}
+        position={labelPos}
         center
         distanceFactor={10}
         zIndexRange={[5, 0]}
@@ -390,7 +411,7 @@ export default function Constellation() {
         </motion.div>
 
         <motion.div
-          className="pointer-events-none absolute bottom-10 left-0 right-0 z-10 px-6 md:px-10"
+          className="pointer-events-none absolute bottom-0 left-0 right-0 z-10 px-6 md:px-10 pb-10 pt-16 bg-gradient-to-t from-[#04060d] via-[#04060d]/85 to-transparent"
           style={{ opacity: captionOpacity }}
         >
           <div className="mx-auto flex max-w-[1400px] items-end justify-between gap-8">

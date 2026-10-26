@@ -75,7 +75,7 @@ export default function Nav() {
           </span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-1 text-[13px]">
+        <nav className="hidden lg:flex items-center gap-1 text-[13px]">
           {sections.map((s) => {
             const isActive = active === s.id;
             return (

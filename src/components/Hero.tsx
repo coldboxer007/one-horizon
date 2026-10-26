@@ -27,11 +27,6 @@ export default function Hero() {
       <section
         id="top"
         className="relative min-h-[100svh] w-full overflow-hidden noise"
-        style={{
-          // Shown only if WebGL2 is unavailable
-          background:
-            "radial-gradient(80% 60% at 85% 70%, rgba(106,169,255,0.16), transparent 70%), #04060d",
-        }}
       >
         <HorizonField className="absolute inset-0 [mask-image:linear-gradient(to_bottom,black_82%,transparent)]" />
 

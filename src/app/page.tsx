@@ -10,7 +10,7 @@ import Contact from "@/components/Contact";
 
 export default function Home() {
   return (
-    <main id="top" className="relative">
+    <main className="relative">
       <Hero />
       <Manifesto />
       <PlatformRibbon />
